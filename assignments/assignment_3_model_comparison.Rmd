@@ -59,7 +59,7 @@ In your discussion of the findings, briefly interpret the results of the above a
 Read the dataset used in this assignment. Pay attention to the extension of the datafile.
 
 ```{r}
-
+data_pain <- read_xlsx(https://github.com/drkovacskata/elte-ppk-r-course-Fall-2026/blob/main/data/assignment_3_dataset.xlsx)
 ```
 
 ## Data and model diagnostics 
