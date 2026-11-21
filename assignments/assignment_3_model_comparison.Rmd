@@ -74,7 +74,6 @@ Read the dataset used in this assignment. Pay attention to the extension of the 
 
 
 ```{r}
-data_pain <- read_xlsx(https://github.com/drkovacskata/elte-ppk-r-course-Fall-2026/blob/main/data/assignment_3_dataset.xlsx)
 data_pain <- readxl::read_xlsx("data/assignment_3_dataset.xlsx")
 ```
 ```{r}
@@ -159,9 +158,13 @@ mod_complex <- lm(pain ~ age + sex + STAI_trait + pain_cat + mindfulness +
 Check for outlier values in the model.
 
 ```{r}
-# Cook's distance
+# Cook's distance for each case
 plot(mod_complex, which = 4)
-which(cooks.distance(mod_complex) > 4 / nrow(data_pain))
+
+# Cases above the 4/n rule of thumb
+cooks <- cooks.distance(mod_complex)
+which(cooks > 4 / nrow(data_pain))
+max(cooks)
 ```
 
 #### Checking assumptions
@@ -177,13 +180,16 @@ shapiro.test(residuals(mod_complex))
 Check the linearity assumption.
 
 ```{r}
-
+# Linearity
+car::crPlots(mod_complex)
 ```
 
 Check the homoscedasticty assumption (homogeneity of variance).
 
 ```{r}
-
+# Homoscedasticity
+plot(mod_complex, which = 2)
+lmtest::bptest(mod_complex)
 ```
 
 Check the multicollinearity assumption.
@@ -195,7 +201,9 @@ https://statisticalhorizons.com/multicollinearity
 http://blog.minitab.com/blog/understanding-statistics/handling-multicollinearity-in-regression-analysis
 
 ```{r}
-
+# Multicollinearity
+car::vif(mod_complex)
+cor(data_pain$cortisol_serum, data_pain$cortisol_saliva)
 ```
 
 ### Making decision based on model diagnostics
