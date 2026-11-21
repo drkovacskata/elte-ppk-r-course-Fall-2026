@@ -211,39 +211,51 @@ cor(data_pain$cortisol_serum, data_pain$cortisol_saliva)
 If based on the assumption tests you decide to drop a predictor variable you should do that here. Create your updated model.
 
 ```{r}
-
+# Predictor with the high VIF (probably cortisol_saliva)
+mod_final <- lm(pain ~ age + sex + STAI_trait + pain_cat + mindfulness +
+                  cortisol_serum, data = data_pain)
 ```
 
 #### Checking outliers of the updated model
 
 ```{r}
-
+# Run all checks on the updated model again
+plot(mod_final, which = 4)
+plot(mod_final, which = 2)
+shapiro.test(residuals(mod_final))
+car::crPlots(mod_final)
+plot(mod_final, which = 3)
+lmtest::bptest(mod_final)
+car::vif(mod_final)
 ```
 
 #### Checking assumptions of the updated model
 
-Normality assumption
-
 ```{r}
-
+# Linearity
+car::crPlots(mod_final)
 ```
 
-Linearity assumption
+Check the homoscedasticty assumption (homogeneity of variance).
 
 ```{r}
-
+# Homoscedasticity
+plot(mod_complex, which = 2)
+lmtest::bptest(mod_final)
 ```
 
-Homoscedasticty assumption (homogeneity of variance)
+Check the multicollinearity assumption.
+
+(VIF above 5), or a VIF threshold of 3 is recommended in this paper: http://onlinelibrary.wiley.com/doi/10.1111/j.2041-210X.2009.00001.x/full
+
+Some info about VIF: 
+https://statisticalhorizons.com/multicollinearity
+http://blog.minitab.com/blog/understanding-statistics/handling-multicollinearity-in-regression-analysis
 
 ```{r}
-
-```
-
-Multicollinearity assumption
-
-```{r}
-
+# Multicollinearity
+car::vif(mod_final)
+cor(data_pain$cortisol_serum, data_pain$cortisol_saliva)
 ```
 
 ## Model comparison
