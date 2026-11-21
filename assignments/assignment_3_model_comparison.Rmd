@@ -124,7 +124,7 @@ data_pain <- data_pain %>%
     sex = if_else(sex == "woman", "female", sex),
     sex = factor(sex),
     # values outside the allowed range are set to NA
-    pain = if_else(pain > 10, NA_real_, pain),
+    pain = if_else(pain > 10, NA_real_, pain), # example: pain must be 0-10
     mindfulness = if_else(mindfulness > 6, NA_real_, mindfulness)
   )
 
@@ -188,7 +188,7 @@ Check the homoscedasticty assumption (homogeneity of variance).
 
 ```{r}
 # Homoscedasticity
-plot(mod_complex, which = 2)
+plot(mod_complex, which = 3)
 lmtest::bptest(mod_complex)
 ```
 
@@ -231,16 +231,21 @@ car::vif(mod_final)
 
 #### Checking assumptions of the updated model
 
+# Normality
+plot(mod_final, which = 2)
+shapiro.test(residuals(mod_final))
+
 ```{r}
 # Linearity
 car::crPlots(mod_final)
+plot(mod_final, which = 1)
 ```
 
 Check the homoscedasticty assumption (homogeneity of variance).
 
 ```{r}
 # Homoscedasticity
-plot(mod_complex, which = 2)
+plot(mod_final, which = 3)
 lmtest::bptest(mod_final)
 ```
 
@@ -255,7 +260,7 @@ http://blog.minitab.com/blog/understanding-statistics/handling-multicollinearity
 ```{r}
 # Multicollinearity
 car::vif(mod_final)
-cor(data_pain$cortisol_serum, data_pain$cortisol_saliva)
+cor(data_pain$cortisol_serum, data_pain$cortisol_saliva) # Correlation of the two cortisol measures (just for reference)
 ```
 
 ## Model comparison
